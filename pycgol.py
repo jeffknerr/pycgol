@@ -1,7 +1,7 @@
 #! /usr/bin/python3
 
 """
-the game of life...
+game of life program
 
 1 = alive
 0 = dead
@@ -26,26 +26,45 @@ def print_char(i):
         return RED_DISK
     return u'\u00B7' # empty cell
 
-
 import numpy as np
 import click
 import random
+from os import environ
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
+
+import pygame
+from pygame.locals import (KEYDOWN, K_ESCAPE, K_q, QUIT)
 
 @click.command()
 @click.option("--res", default=5, help="grid resolution")
 @click.option("--nts", default=10, help="number of time steps")
+@click.option("--nts", default=10, help="number of time steps")
 def main(res,nts):
+    pygame.init()
     rows = res
-    cols = res*3
+    cols = res
     grid = np.zeros((rows,cols))
     ts = 0
     initialconditions(grid)
-    prettyprint(grid)
-    while ts < nts:
+#   prettyprint(grid)
+    display = pygame.display.set_mode((rows, cols))
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == KEYDOWN and (event.key == K_ESCAPE or event.key == K_q):
+                running = False
+            if event.type == pygame.QUIT:
+                running = False
+        if ts >= nts:
+            running = False
         update(grid)
         ts += 1
-        print("===> ", ts)
-        prettyprint(grid)
+        print(ts)
+        new = grid*255
+        pygame.surfarray.blit_array(display, new)
+        pygame.display.flip()
+
+    pygame.quit()
 
 def prettyprint(grid):
     """function to output board to screen"""
