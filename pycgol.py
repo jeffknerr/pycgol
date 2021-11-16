@@ -29,13 +29,14 @@ def print_char(i):
 
 import numpy as np
 import click
+import random
 
 @click.command()
 @click.option("--res", default=5, help="grid resolution")
 @click.option("--nts", default=10, help="number of time steps")
 def main(res,nts):
     rows = res
-    cols = res
+    cols = res*3
     grid = np.zeros((rows,cols))
     ts = 0
     initialconditions(grid)
@@ -93,7 +94,15 @@ def count(grid, row, col):
 
 def initialconditions(grid):
     """set up the initial grid cells"""
-    oscillator(grid)
+    #oscillator(grid)
+    randomstart(grid)
+
+
+def randomstart(grid):
+    """randomly placed 1s and 0s"""
+    for i in range(grid.shape[0]):
+        for j in range(grid.shape[1]):
+            grid[i,j] = random.randrange(2)
 
 
 def oscillator(grid):
