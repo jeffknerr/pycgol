@@ -6,8 +6,8 @@ from random import randrange
 class MyTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.rows = 5
-        self.cols = 8
+        self.rows = 25
+        self.cols = 13
         # zeros
         self.zgrid = np.zeros((self.rows,self.cols))
         # ones
@@ -35,9 +35,9 @@ class MyTestCase(unittest.TestCase):
         result = count(self.ogrid, self.rows - 1, self.cols - 1)
         self.assertEqual(result, 8)
         # random grid location
-        i = randrange(self.cols)
-        j = randrange(self.rows)
-        result = count(self.ogrid, i, j)
+        r = randrange(self.rows)
+        c = randrange(self.cols)
+        result = count(self.ogrid, r, c)
         self.assertEqual(result, 8)
 
     def test_count_wraparound(self):

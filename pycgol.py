@@ -83,10 +83,19 @@ def update(grid):
     """update the grid according to the game rules"""
     # make a copy so we can update grid without affecting the live/dead calculations
     origgrid = np.copy(grid)                  
+    maxrow = grid.shape[0]
+    maxcol = grid.shape[1]
     for i in range(grid.shape[0]):
         for j in range(grid.shape[1]):
-            neighbors = utils.count(origgrid,i,j)
-#           print(i,j,grid[i,j],neighbors,"======")
+            pr = i - 1     # previous row (using python negative indexing here)
+            pc = j - 1     # previous col (using python negative indexing here)
+            nr = (i + 1) % maxrow     # next row
+            nc = (j + 1) % maxcol     # next col
+            neighbors = origgrid[pr,pc]+origgrid[pr,j]+origgrid[pr,nc]+\
+               origgrid[i,pc]+origgrid[i,nc]+\
+               origgrid[nr,pc]+origgrid[nr,j]+origgrid[nr,nc]
+#           neighbors = utils.count(origgrid,i,j)
+#           calling function adds 15% to cputime???
             if grid[i,j] == 1:
                 if neighbors <= 1 or neighbors >= 4:
                     grid[i,j] = 0
