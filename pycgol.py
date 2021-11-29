@@ -29,6 +29,7 @@ def print_char(i):
 import numpy as np
 import click
 import random
+import utils
 from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
@@ -37,7 +38,6 @@ from pygame.locals import (KEYDOWN, K_ESCAPE, K_q, QUIT)
 
 @click.command()
 @click.option("--res", default=5, help="grid resolution")
-@click.option("--nts", default=10, help="number of time steps")
 @click.option("--nts", default=10, help="number of time steps")
 def main(res,nts):
     pygame.init()
@@ -85,7 +85,7 @@ def update(grid):
     origgrid = np.copy(grid)                  
     for i in range(grid.shape[0]):
         for j in range(grid.shape[1]):
-            neighbors = count(origgrid,i,j)
+            neighbors = utils.count(origgrid,i,j)
 #           print(i,j,grid[i,j],neighbors,"======")
             if grid[i,j] == 1:
                 if neighbors <= 1 or neighbors >= 4:
@@ -93,22 +93,6 @@ def update(grid):
             else:
                 if neighbors == 3:
                     grid[i,j] = 1
-
-def count(grid, row, col):
-    """given a grid location, count and return number of alive neighbors"""
-    # https://stackoverflow.com/questions/54690743/compare-neighbours-boolean-numpy-array-in-grid
-    rows = np.array([-1, -1, -1,  0,  0,  1,  1,  1])
-    cols = np.array([-1,  0,  1, -1,  1, -1,  0,  1])
-    # negative indeces work, but can't go past end of array??? need to wrap??
-    maxrow = grid.shape[0]
-    maxcol = grid.shape[1]
-    for i in range(len(rows)):
-        if rows[i] + row >= maxrow:
-            rows[i] = rows[i] - maxrow   # manual wraparound
-    for j in range(len(cols)):
-        if cols[j] + col >= maxcol:
-            cols[j] = cols[j] - maxcol   # manual wraparound
-    return sum(grid[rows+row,cols+col])
 
 
 def initialconditions(grid):
