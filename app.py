@@ -21,14 +21,15 @@ def main(res, nts):
     game = gol.GOL(rows, cols)
     timestep = 0
 #   game.initialconditions("random")
-    game.initialconditions("oscillator")
-#   print(game)
+#   game.initialconditions("oscillator")
+    game.initialconditions("glider")
+    print(game)
     running = True
     while running:
         game.step()
         timestep += 1
         print(timestep)
-#       print(game)
+        print(game)
         if timestep >= nts:
             running = False
     print(game.alive())

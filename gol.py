@@ -63,6 +63,8 @@ class GOL():
         """set up the initial grid cells"""
         if how == "oscillator":
             self._oscillator(i, j)
+        elif how == "glider":
+            self._glider(i, j)
         elif how == "zeros":
             self._zeros()
         elif how == "ones":
@@ -92,6 +94,26 @@ class GOL():
             self.grid[i, j] = 1
             jplus = (j+1) % self.cols
             self.grid[i, jplus] = 1
+
+    def _glider(self, i=None, j=None):
+        """glider in the middle, or at i,j"""
+        if i is None and j is None:
+            halfr = int(self.rows/2)
+            halfc = int(self.cols/2)
+            self.grid[halfr-1, halfc+1] = 1
+            self.grid[halfr, halfc-1] = 1
+            self.grid[halfr, halfc+1] = 1
+            self.grid[halfr+1, halfc] = 1
+            self.grid[halfr+1, halfc+1] = 1
+        else:
+            # put glider at i,j (row,col)
+            iplus = (i+1) % self.rows
+            jplus = (j+1) % self.cols
+            self.grid[i-1, jplus] = 1
+            self.grid[i, j-1] = 1
+            self.grid[i, jplus] = 1
+            self.grid[iplus, j] = 1
+            self.grid[iplus, jplus] = 1
 
     def _zeros(self):
         """all 0s"""
