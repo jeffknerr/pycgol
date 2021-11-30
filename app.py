@@ -22,15 +22,16 @@ def main(res, nts):
     timestep = 0
 #   game.initialconditions("random")
     game.initialconditions("oscillator")
-    print(game)
+#   print(game)
     running = True
     while running:
         game.step()
         timestep += 1
         print(timestep)
-        print(game)
+#       print(game)
         if timestep >= nts:
             running = False
+    print(game.alive())
 
 
 if __name__ == '__main__':

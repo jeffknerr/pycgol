@@ -91,6 +91,7 @@ class MyTestCase(unittest.TestCase):
             self.assertEqual(result, 3)
         # now check the corners
         osc = gol.GOL(8, 8)
+        # bottom right
         osc.initialconditions("oscillator", 7, 7)
         result = osc.alive()
         self.assertEqual(result, 3)
@@ -100,6 +101,94 @@ class MyTestCase(unittest.TestCase):
             # should just oscillate back and forth, but always 3 alive
             self.assertEqual(result, 3)
             self.assertEqual(osc.grid[7, 7], 1)
+        osc = gol.GOL(13, 13)
+        # top right
+        osc.initialconditions("oscillator", 0, 12)
+        result = osc.alive()
+        self.assertEqual(result, 3)
+        for _ in range(randrange(20, 60)):
+            osc.step()
+            result = osc.alive()
+            # should just oscillate back and forth, but always 3 alive
+            self.assertEqual(result, 3)
+            # center should always be alive
+            self.assertEqual(osc.grid[0, 12], 1)
+        # test flip back and forth
+        osc = gol.GOL(5, 5)
+        osc.initialconditions("oscillator", 2, 2)
+        result = osc.alive()
+        self.assertEqual(result, 3)
+        for i in range(13):
+            osc.step()
+            result = osc.alive()
+            self.assertEqual(result, 3)
+            if i % 2 == 0:
+                self.assertEqual(osc.grid[1, 1], 0)
+                self.assertEqual(osc.grid[2, 1], 0)
+                self.assertEqual(osc.grid[3, 1], 0)
+                self.assertEqual(osc.grid[1, 2], 1)
+                self.assertEqual(osc.grid[2, 2], 1)
+                self.assertEqual(osc.grid[3, 2], 1)
+                self.assertEqual(osc.grid[1, 3], 0)
+                self.assertEqual(osc.grid[2, 3], 0)
+                self.assertEqual(osc.grid[3, 3], 0)
+            else:
+                self.assertEqual(osc.grid[1, 1], 0)
+                self.assertEqual(osc.grid[2, 1], 1)
+                self.assertEqual(osc.grid[3, 1], 0)
+                self.assertEqual(osc.grid[1, 2], 0)
+                self.assertEqual(osc.grid[2, 2], 1)
+                self.assertEqual(osc.grid[3, 2], 0)
+                self.assertEqual(osc.grid[1, 3], 0)
+                self.assertEqual(osc.grid[2, 3], 1)
+                self.assertEqual(osc.grid[3, 3], 0)
+
+    def test_still_lifes(self):
+        """test counts on still lifes"""
+        # https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
+        gol_still = gol.GOL(self.rows, self.cols)
+        gol_still.initialconditions("zeros")
+        # block in top left corner
+        i = 0
+        j = 0
+        gol_still.grid[i, j] = 1
+        gol_still.grid[i+1, j] = 1
+        gol_still.grid[i, j+1] = 1
+        gol_still.grid[i+1, j+1] = 1
+        # tub in bottom center
+        i = self.rows - 1
+        j = int(self.cols/2)
+        gol_still.grid[i, j+1] = 1
+        gol_still.grid[i-1, j] = 1
+        gol_still.grid[i-1, j+2] = 1
+        gol_still.grid[i-2, j+1] = 1
+        howmany = 8
+        result = gol_still.alive()
+        self.assertEqual(result, howmany)
+        for i in range(randrange(5, 30)):
+            gol_still.step()
+            result = gol_still.alive()
+            self.assertEqual(result, howmany)
+
+    def test_glider(self):
+        """test counts on a glider"""
+        # https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
+        gol_still = gol.GOL(self.rows, self.cols)
+        gol_still.initialconditions("zeros")
+        i = 0
+        j = 0
+        gol_still.grid[i, j+2] = 1
+        gol_still.grid[i+1, j] = 1
+        gol_still.grid[i+1, j+2] = 1
+        gol_still.grid[i+2, j+1] = 1
+        gol_still.grid[i+2, j+2] = 1
+        howmany = 5
+        result = gol_still.alive()
+        self.assertEqual(result, howmany)
+        for i in range(randrange(25, 50)):
+            gol_still.step()
+            result = gol_still.alive()
+            self.assertEqual(result, howmany)
 
 
 if __name__ == '__main__':
