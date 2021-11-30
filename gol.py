@@ -141,6 +141,18 @@ class GOL():
         """return number dead on grid"""
         return (self.rows * self.cols) - np.sum(self.grid)
 
+    def getRows(self):
+        """getter for rows"""
+        return self.rows
+
+    def getCols(self):
+        """getter for cols"""
+        return self.cols
+
+    def cell_is_alive(self, i, j):
+        """return True if cell i,j is alive"""
+        return self.grid[i, j] == 1
+
 
 def main():
     """simple test code here"""

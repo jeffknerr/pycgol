@@ -8,6 +8,37 @@ things to learn:
 - parallel processing?
 - profiling
 
+
+
+## running
+
+```
+# run 10x10 grid for 120 timesteps, display progress to terminal
+./app.py --res 10 --nts 120 --term
+```
+
+![gol picture in terminal](gol-terminal.png)
+
+
+```
+# run 200x200 grid for 420 timesteps, display progress using pygame
+./app.py --res 200 --nts 420 --pyg
+```
+
+![gol picture using pygame](gol-pygame.png)
+
+
+## depends on
+
+```
+$ dpkg -l | grep pygame
+ii  python3-pygame        1.9.6+dfsg-2build1
+
+$ dpkg -l | grep python3-click
+ii  python3-click         7.0-3
+```
+
+
 ## unit testing
 
 ```
