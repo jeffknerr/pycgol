@@ -89,7 +89,7 @@ def main(res, nts, procs):
         # copy to oldgrid to set up for next time step
         sholdgrid[:] = shgrid[:]
     tfinish = time.time()
-    endstats(shgrid, timestep, tfinish - tstart)
+    endstats(shgrid, timestep, tfinish - tstart, procs)
     pygame.quit()
     # close it all down...
     shm.close()
@@ -147,12 +147,13 @@ def initrandom(grid):
             grid[i, j] = random.randrange(2)
 
 
-def endstats(mygrid, timestep, totaltime):
+def endstats(mygrid, timestep, totaltime, procs):
     """show stats at the end"""
     rows = mygrid.shape[0]
     cols = mygrid.shape[1]
     print("resolution: %d x %d" % (rows, cols))
     print(" timesteps: %d" % (timestep))
+    print("processors: %d" % (procs))
     print("      time: %.2f sec" % (totaltime))
     alive = np.count_nonzero(mygrid == 1)
     dead = np.count_nonzero(mygrid == 0)

@@ -57,6 +57,7 @@ ii  python3-numpy         1.17.4
 ## unit testing
 
 Test the `count()` function in `utils.py`:
+
 ```
 $ python3 test_utils.py
 ..
@@ -113,3 +114,125 @@ Mon Nov 29 12:12:40 2021    output
  50250000   77.502    0.000   77.502    0.000 /scratch/knerr/repos/pycgol/./utils.py:12(count)
       201    0.394    0.002    0.394    0.002 {built-in method pygame.display.flip}
 ```
+
+## multiprocessing
+
+Test runs for non-multiprocessing verion (`app.py`):
+
+```
+± $ for i in 1 2 3 4 5
+for> do
+for> echo ">>>>>>>>>>> $i"                                                                                        for> ./app.py --res 200 --pyg --nts 100
+for> echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"                                                                     for> done
+>>>>>>>>>>> 1
+pygame 1.9.6
+Hello from the pygame community. https://www.pygame.org/contribute.html
+resolution: 200 x 200
+ timesteps: 100
+      time: 7.96 sec
+     alive: 3641
+      dead: 36359
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+>>>>>>>>>>> 2
+pygame 1.9.6
+Hello from the pygame community. https://www.pygame.org/contribute.html
+resolution: 200 x 200
+ timesteps: 100
+      time: 7.98 sec
+     alive: 3503
+      dead: 36497
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+>>>>>>>>>>> 3
+pygame 1.9.6
+Hello from the pygame community. https://www.pygame.org/contribute.html
+resolution: 200 x 200
+ timesteps: 100
+      time: 8.05 sec
+     alive: 4123
+      dead: 35877
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+>>>>>>>>>>> 4
+pygame 1.9.6
+Hello from the pygame community. https://www.pygame.org/contribute.html
+resolution: 200 x 200
+ timesteps: 100
+      time: 8.28 sec
+     alive: 3925
+      dead: 36075
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+>>>>>>>>>>> 5
+pygame 1.9.6
+Hello from the pygame community. https://www.pygame.org/contribute.html
+resolution: 200 x 200
+ timesteps: 100
+      time: 8.07 sec
+     alive: 3540
+      dead: 36460
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+```
+
+Test runs for multiprocessing verion (`mpgol.py`):
+
+```
+$ for i in 1 2 3 4 5
+do
+echo ">>>>>>>>>>> $i"
+./mpgrid.py --res 200 --nts 100
+echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+done
+>>>>>>>>>>> 1
+pygame 1.9.6
+Hello from the pygame community. https://www.pygame.org/contribute.html
+resolution: 200 x 200
+ timesteps: 100
+processors: 2
+      time: 4.22 sec
+     alive: 3895
+      dead: 36105
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+>>>>>>>>>>> 2
+pygame 1.9.6
+Hello from the pygame community. https://www.pygame.org/contribute.html
+resolution: 200 x 200
+ timesteps: 100
+processors: 2
+      time: 4.26 sec
+     alive: 3765
+      dead: 36235
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+>>>>>>>>>>> 3
+pygame 1.9.6
+Hello from the pygame community. https://www.pygame.org/contribute.html
+resolution: 200 x 200
+ timesteps: 100
+processors: 2
+      time: 4.14 sec
+     alive: 4093
+      dead: 35907
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+>>>>>>>>>>> 4
+pygame 1.9.6
+Hello from the pygame community. https://www.pygame.org/contribute.html
+resolution: 200 x 200
+ timesteps: 100
+processors: 2
+      time: 4.14 sec
+     alive: 3774
+      dead: 36226
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+>>>>>>>>>>> 5
+pygame 1.9.6
+Hello from the pygame community. https://www.pygame.org/contribute.html
+resolution: 200 x 200
+ timesteps: 100
+processors: 2
+      time: 4.12 sec
+     alive: 3567
+      dead: 36433
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+```
+
+Seems to work (takes about half as long). I can halve the time again
+by using `--procs 4`, but going to 8 doesn't decrease the total time
+(sometimes even increases it a bit).
+
