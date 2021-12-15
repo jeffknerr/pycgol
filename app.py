@@ -65,7 +65,7 @@ def main(res, nts, term, pyg):
 
 def display(game, term, timestep):
     """show how the game is progressing"""
-    print(timestep)
+#   print(timestep)
     if term:
         RED = u"\033[1;31m"
         BLUE = u"\033[1;34m"
@@ -82,8 +82,8 @@ def display(game, term, timestep):
                 else:
                     line += RED_DISK
             print(line)
-    else:
-        print(game)
+#   else:
+#       print(game)
 
 
 def endstats(game, timestep, totaltime):

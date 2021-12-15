@@ -12,6 +12,7 @@ Dec 2021
 # this one really helped me understand shared memory:
 # https://stackoverflow.com/questions/34824382/sharing-numpy-arrays-between-multiple-processes-without-inheritance
 
+import time
 import random
 import multiprocessing as mp
 from multiprocessing import shared_memory
@@ -56,6 +57,7 @@ def main(res, nts, procs):
     step = int(rows/procs) + 1
     timestep = 0
     display(pgdisplay, shgrid, timestep)
+    tstart = time.time()
     running = True
     while running:
         # check for quit early
@@ -86,6 +88,8 @@ def main(res, nts, procs):
             running = False
         # copy to oldgrid to set up for next time step
         sholdgrid[:] = shgrid[:]
+    tfinish = time.time()
+    endstats(shgrid, timestep, tfinish - tstart)
     pygame.quit()
     # close it all down...
     shm.close()
@@ -96,7 +100,7 @@ def main(res, nts, procs):
 
 def display(pgdisplay, grid, timestep):
     """show how the game is progressing"""
-    print(timestep)
+#   print(timestep)
     # change value so we can see it in pygame
     new = grid*255
     pygame.surfarray.blit_array(pgdisplay, new)
@@ -143,23 +147,17 @@ def initrandom(grid):
             grid[i, j] = random.randrange(2)
 
 
-def prettyprint(grid):
-    """function to output board to screen"""
-    RED = u"\033[1;31m"
-    BLUE = u"\033[1;34m"
-    RESET = u"\033[0;0m"
-    CIRCLE = u"\u25CF"
-
-    RED_DISK = RED + CIRCLE + RESET
-    BLUE_DISK = BLUE + CIRCLE + RESET
-    for i in range(grid.shape[0]):
-        line = ""
-        for j in range(grid.shape[1]):
-            if grid[i, j] == 0:
-                line += BLUE_DISK
-            else:
-                line += RED_DISK
-        print(line)
+def endstats(mygrid, timestep, totaltime):
+    """show stats at the end"""
+    rows = mygrid.shape[0]
+    cols = mygrid.shape[1]
+    print("resolution: %d x %d" % (rows, cols))
+    print(" timesteps: %d" % (timestep))
+    print("      time: %.2f sec" % (totaltime))
+    alive = np.count_nonzero(mygrid == 1)
+    dead = np.count_nonzero(mygrid == 0)
+    print("     alive: %3d" % (alive))
+    print("      dead: %3d" % (dead))
 
 
 if __name__ == '__main__':
