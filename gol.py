@@ -1,5 +1,11 @@
 """
-game of life class
+game of life class. example use:
+
+g = GOL(5, 5)
+g.initialconditions("oscillator", 0, 0)
+print(g)
+g.step()
+print(g)
 
 J. Knerr
 November 2021

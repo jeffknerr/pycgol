@@ -1,9 +1,17 @@
+"""
+version of pycgol.py that uses multiprocessing
 
+J. Knerr
+Dec 2021
+"""
+
+# this one really helped me understand shared memory:
 # https://stackoverflow.com/questions/34824382/sharing-numpy-arrays-between-multiple-processes-without-inheritance
 
 import numpy as np
 from multiprocessing import shared_memory
-import multiprocessing 
+import multiprocessing
+import random
 
 RED   = u"\033[1;31m"
 BLUE  = u"\033[1;34m"
@@ -46,6 +54,12 @@ def osc(grid, rows, cols):
     grid[5,5]=1
     grid[6,5]=1
 
+def initrandom(grid, rows, cols):
+    """random initial conditions"""
+    for i in range(grid.shape[0]):
+        for j in range(grid.shape[1]):
+            grid[i,j] = random.randrange(2)
+
 def prettyprint(grid):
     """function to output board to screen"""
     for i in range(grid.shape[0]):
@@ -58,11 +72,13 @@ def prettyprint(grid):
         print(line)
 
 def main():
-    rows = 10
-    cols = 8
+    rows = 200
+    cols = 200
     grid = np.zeros((rows,cols))
     oldgrid = np.zeros((rows,cols))
-    osc(grid, rows, cols)
+#   osc(grid, rows, cols)
+    initrandom(grid, rows, cols)
+#   prettyprint(grid)
     oldgrid[:] = grid[:]
     shm = shared_memory.SharedMemory(create=True, size=grid.nbytes)
     shgrid = np.ndarray(grid.shape, dtype=grid.dtype, buffer=shm.buf)
@@ -74,20 +90,36 @@ def main():
     print("-"*40)
     print(shm.name)
     print(shm2.name)
-    prettyprint(shgrid)
+#   prettyprint(shgrid)
 
-    nts = 5
-    rowhalf = int(rows/2)
+    nts = 300
+    procs = 4
+    step = int(rows/procs) + 1
     for ts in range(nts):
         print("-"*40, " ts:", ts)
-        p1 = multiprocessing.Process(target=update, args=(shgrid,sholdgrid,0,rowhalf,cols))
-        p2 = multiprocessing.Process(target=update, args=(shgrid,sholdgrid,rowhalf,rows,cols))
-        p1.start()
-        p2.start()
-        p1.join()
-        p2.join()
+        # start them all up
+        start = 0
+        aprocs = []
+        while start < rows:
+            end = (start + step)
+            if end > rows:
+                end = rows
+            p = multiprocessing.Process(target=update, args=(shgrid,sholdgrid,start,end,cols))
+            p.start()
+            print(ts, start, end)
+            aprocs.append(p)
+            start = end
+        for p in aprocs:
+            p.join()
+
+#       p1 = multiprocessing.Process(target=update, args=(shgrid,sholdgrid,0,rowhalf,cols))
+#       p2 = multiprocessing.Process(target=update, args=(shgrid,sholdgrid,rowhalf,rows,cols))
+#       p1.start()
+#       p2.start()
+#       p1.join()
+#       p2.join()
         sholdgrid[:] = shgrid[:]
-        prettyprint(shgrid)
+#       prettyprint(shgrid)
 
     shm.close()
     shm.unlink()

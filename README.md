@@ -1,16 +1,24 @@
 # pycgol
 python fun with game of life program
 
-things to learn:
-- numpy
-- graphics (pygame?)
-- command-line options (click?)
-- parallel processing?
-- profiling
+I was originally trying to learn a little about 
+[numpy](https://numpy.org/doc/stable/user/absolute_beginners.html),
+so I wrote a [game of life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) 
+program that uses numpy arrays. Along the way I also learned a little
+about [click](https://click.palletsprojects.com/en/8.0.x/),
+[pygame](https://www.pygame.org/news),
+[python profiling](https://docs.python.org/3/library/profile.html),
+and [python multiprocessing](https://docs.python.org/3/library/multiprocessing.html).
 
 
 
 ## running
+
+I started with `pycgol.py`, then wrote a class (`gol.py`) to make
+unit testing easier. You can run `app.py`, which uses instances
+of the `GOL` class (defined in `gol.py`).
+
+For small grids, display to terminal is fine:
 
 ```
 # run 10x10 grid for 120 timesteps, display progress to terminal
@@ -20,12 +28,16 @@ things to learn:
 ![gol picture in terminal](gol-terminal.png)
 
 
+For larger grids, you might want to display to pygame window:
+
 ```
 # run 200x200 grid for 420 timesteps, display progress using pygame
 ./app.py --res 200 --nts 420 --pyg
 ```
 
 ![gol picture using pygame](gol-pygame.png)
+
+See below for running the `multiprocessing` version.
 
 
 ## depends on
@@ -36,11 +48,15 @@ ii  python3-pygame        1.9.6+dfsg-2build1
 
 $ dpkg -l | grep python3-click
 ii  python3-click         7.0-3
+
+$ dpkg -l | grep numpy
+ii  python3-numpy         1.17.4
 ```
 
 
 ## unit testing
 
+Test the `count()` function in `utils.py`:
 ```
 $ python3 test_utils.py
 ..
@@ -50,7 +66,25 @@ Ran 2 tests in 0.000s
 OK
 ```
 
+Test the `GOL` class and methods in `gol.py` (this tests for more
+than just `count()` -- also tests that gol algorithm is actually
+working):
+
+```
+$ python3 test_gol.py
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.070s
+
+OK
+```
+
 ## profiling
+
+Even though this python implementation is not super fast, I still thought
+it might be taking longer than it should. Below is an example of a profiling
+run I did, that shows the old `count()` function I was using (in `utils.py`)
+was taking a long time (77.5 seconds).
 
 ```
 $ python3 -m cProfile -o output ./pycgol.py  --res 500 --nts 200

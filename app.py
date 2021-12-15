@@ -7,12 +7,13 @@ J. Knerr
 Nov 2021
 """
 
+import time
+from os import environ
+import click
 import pygame
 from pygame.locals import (KEYDOWN, K_ESCAPE, K_q)
-import time
-import click
 import gol
-from os import environ
+# stop the "welcome to pygame" message from being displayed
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
 
@@ -32,7 +33,7 @@ def main(res, nts, term, pyg):
     tstart = time.time()
     game.initialconditions("random")
 #   game.initialconditions("oscillator")
-    game.initialconditions("glider")
+#   game.initialconditions("glider")
     if pyg:
         pygame.init()
         pgdisplay = pygame.display.set_mode((rows, cols))
@@ -52,6 +53,7 @@ def main(res, nts, term, pyg):
         if timestep >= nts:
             running = False
         if pyg:
+            # change values so colors can be seen in pygame
             new = game.grid*255
             pygame.surfarray.blit_array(pgdisplay, new)
             pygame.display.flip()
